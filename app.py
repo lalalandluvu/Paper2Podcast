@@ -18,6 +18,7 @@ st.markdown("Turn your academic papers into engaging podcasts.")
 with st.sidebar:
     st.header("Configuration")
     api_key = st.text_input("OpenAI API Key", type="password")
+    google_api_key = st.text_input("Google API Key (for Album Art)", type="password", help="Get it from Google AI Studio")
     
     st.subheader("Podcast Persona")
     persona_type = st.selectbox(
@@ -62,6 +63,8 @@ with st.sidebar:
         host_name = random.choice(["Sarah", "Emma", "Chloe", "Olivia", "Ava"])
     else:
         host_name = random.choice(["Mike", "David", "James", "Robert", "John"])
+        
+
 
 # Main Area
 uploaded_file = st.file_uploader("Upload a Research Paper (PDF)", type="pdf")
@@ -91,6 +94,26 @@ if uploaded_file is not None and api_key:
                         title = uploaded_file.name.replace(".pdf", "")
                 except:
                     title = uploaded_file.name.replace(".pdf", "")
+                    
+                # Generate Album Art
+                if google_api_key:
+                    st.subheader("Album Art")
+                    with st.spinner("Generating Album Art..."):
+                        try:
+                            from langchain_openai import ChatOpenAI
+                            from image_utils import generate_album_art
+                            
+                            llm = ChatOpenAI(model="gpt-4o", api_key=api_key)
+                            prompt_response = llm.invoke(f"Generate a short, artistic, and descriptive image prompt for a podcast cover art based on this paper title: '{title}'. The style should be modern, digital art, and relevant to the topic. Output ONLY the prompt.")
+                            image_prompt = prompt_response.content
+                            
+                            image = generate_album_art(image_prompt, google_api_key)
+                            if image:
+                                st.image(image, caption=f"Generated Cover Art: {image_prompt}")
+                            else:
+                                st.warning("Failed to generate image. Check your Google API Key.")
+                        except Exception as e:
+                            st.error(f"Error generating album art: {e}")
 
                 # Generate Audio
                 st.subheader("Audio Generation")
