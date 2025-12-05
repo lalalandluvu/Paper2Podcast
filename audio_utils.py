@@ -10,7 +10,14 @@ def generate_audio(text, api_key, title="podcast", host_voice="alloy", guest_voi
     # Sanitize title for filename
     safe_title = re.sub(r'[\\/*?:"<>|]', "", title) # Remove invalid chars
     safe_title = safe_title[:50].strip() # Truncate to 50 chars
-    output_path = os.path.join("generated podcasts", f"{safe_title}.mp3")
+    safe_title = safe_title[:50].strip() # Truncate to 50 chars
+    
+    # Ensure output directory exists
+    output_dir = "generated podcasts"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        
+    output_path = os.path.join(output_dir, f"{safe_title}.mp3")
     
     # Split the text by speaker
     # We use regex to find the speaker labels (Host: or Guest:)
