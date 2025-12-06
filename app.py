@@ -131,4 +131,4 @@ if uploaded_file is not None and api_key:
                     os.unlink(tmp_path)
 
 elif not api_key:
-    st.warning("Please enter your OpenAI API Key in the sidebar to proceed.")
+    st.warning("Please enter your OpenAI API Key in the sidebar to proceed. (Google API Key is optional but required for Album Art generation).")
