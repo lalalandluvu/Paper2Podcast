@@ -72,15 +72,30 @@ def create_podcast_crew(pdf_path, api_key, persona_description, host_name):
         expected_output='A podcast script in dialogue format starting immediately with "Host:".'
     )
 
+    summary_task = Task(
+        description='Create a structured Markdown summary of the paper including: Key Findings, Methodology, and a Glossary of 5 key terms. This is for a student study guide.',
+        agent=researcher,
+        context=[research_task],
+        expected_output='A structured Markdown summary with Key Findings, Methodology, and Glossary.'
+    )
+
     # 5. Create Crew
     crew = Crew(
         agents=[researcher, host],
-        tasks=[research_task, script_task],
+        tasks=[research_task, script_task, summary_task],
         process=Process.sequential,
         verbose=True
     )
 
     # 6. Kickoff
-    # 6. Kickoff
     result = crew.kickoff()
-    return result
+    
+    # Extract outputs
+    # result is a CrewOutput object, but we can also access task outputs directly if needed.
+    # However, CrewAI's kickoff returns the output of the LAST task by default if we just take the string.
+    # But result object has 'tasks_output'.
+    
+    script_output = script_task.output.raw
+    summary_output = summary_task.output.raw
+    
+    return script_output, summary_output

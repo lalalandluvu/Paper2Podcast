@@ -91,11 +91,19 @@ if uploaded_file is not None and api_key:
 
             try:
                 # Run CrewAI
-                script_result = create_podcast_crew(tmp_path, api_key, persona_description, host_name)
+                script_result, summary_result = create_podcast_crew(tmp_path, api_key, persona_description, host_name)
                 
                 # Display Script
                 st.subheader("Generated Podcast Script")
                 st.text_area("Script", value=script_result, height=400)
+                
+                # Download Study Guide
+                st.download_button(
+                    label="Download Study Guide 📝",
+                    data=summary_result,
+                    file_name="study_guide.md",
+                    mime="text/markdown"
+                )
                 
                 # Extract Title
                 try:
