@@ -43,7 +43,4 @@ I have successfully added the ability to select different voices for the Host an
 - The system generates an artistic prompt based on the paper's title and uses it to create the image.
 - The generated image is displayed above the audio player.
 
-### 5. Cheat Sheet Download (`agents.py` & `app.py`)
-- Added a parallel task for the **Researcher** agent to create a structured summary.
-- The summary includes **Key Findings**, **Methodology**, and a **Glossary**.
-- A **"Download Study Guide"** button is available in the UI to download this summary as a Markdown file.
+
