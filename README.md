@@ -21,36 +21,52 @@ Try the app here: [**Paper2Podcast on Streamlit**](https://paper2podcast-5ch697e
     *   **Host**: Select from Alloy, Nova, Shimmer (Female) or Echo, Fable, Onyx (Male).
     *   **Guest**: Select from the same range of high-quality voices.
     *   *The system automatically assigns a gender-appropriate name to the Host based on your selection.*
+*   **🎨 AI Album Art**: Generates unique, artistic cover art for your podcast episode using **Google Imagen 3 (via Gemini)** based on the paper's title.
+*   **📝 Cheat Sheet Download**: Automatically creates and lets you download a **Study Guide** (Markdown) containing Key Findings, Methodology, and a Glossary.
 *   **Audio Generation**: Produces a high-quality MP3 file of the conversation.
 
 ## 🚀 How to Run
 
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/lalalandluvu/Paper2Podcast.git
-    cd Paper2Podcast
+### 1. Clone the repository
+```bash
+git clone https://github.com/lalalandluvu/Paper2Podcast.git
+cd Paper2Podcast
+```
+
+### 2. Setup API Keys (Secrets)
+This app requires an **OpenAI API Key** (for scripts & audio) and an optional **Google API Key** (for Album Art).
+
+**Option A: Using `secrets.toml` (Recommended for Local Dev)**
+1.  Create a folder named `.streamlit` in the project root.
+2.  Create a file named `secrets.toml` inside it.
+3.  Add your keys:
+    ```toml
+    OPENAI_API_KEY = "sk-..."
+    GOOGLE_API_KEY = "..."
     ```
+    *Note: This file is ignored by Git for security.*
 
-2.  **Run the Setup Script**:
-    *   Double-click `setup_and_run.bat` (Windows).
-    *   *Or run in terminal:* `.\setup_and_run.bat`
+**Option B: UI Input**
+*   If no secrets file is found, the app will prompt you to enter your keys in the sidebar.
 
-    This script will automatically:
-    *   Create a Python virtual environment.
-    *   Install all required dependencies.
-    *   Launch the application in your browser.
+### 3. Run the App
+*   **Windows**: Double-click `setup_and_run.bat`.
+*   **Terminal**: `.\setup_and_run.bat`
 
-3.  **Enter your OpenAI API Key**:
-    *   You will need a valid OpenAI API Key to generate the script and audio. Enter it in the sidebar when prompted.
+This script will automatically:
+*   Create a Python virtual environment.
+*   Install all required dependencies.
+*   Launch the application in your browser.
 
 ## 🛠️ Tech Stack
 
 *   **Python**: Core logic.
 *   **Streamlit**: Web interface.
 *   **CrewAI**: Orchestrates the AI agents (Researcher & Host).
-*   **LangChain**: PDF processing and RAG (Retrieval Augmented Generation).
+*   **LangChain**: PDF processing and RAG.
 *   **OpenAI GPT-4o**: Powers the research and scripting.
-*   **OpenAI TTS (Text-to-Speech)**: Generates the lifelike audio.
+*   **OpenAI TTS**: Generates the lifelike audio.
+*   **Google Gemini / Imagen 3**: Generates the album art.
 
 ## 📄 License
 
