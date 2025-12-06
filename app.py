@@ -108,10 +108,25 @@ if uploaded_file is not None and api_key:
                             image_prompt = prompt_response.content
                             
                             image = generate_album_art(image_prompt, google_api_key)
+                            
                             if image:
-                                st.image(image, caption=f"Generated Cover Art: {image_prompt}")
+                                st.image(image, caption=f"Generated Cover Art (Google Imagen 3): {image_prompt}")
                             else:
-                                st.warning("Failed to generate image. Check your Google API Key.")
+                                st.warning("Google Imagen 3 failed. Falling back to DALL-E 3...")
+                                try:
+                                    from openai import OpenAI
+                                    client = OpenAI(api_key=api_key)
+                                    response = client.images.generate(
+                                        model="dall-e-3",
+                                        prompt=image_prompt,
+                                        size="1024x1024",
+                                        quality="standard",
+                                        n=1,
+                                    )
+                                    image_url = response.data[0].url
+                                    st.image(image_url, caption=f"Generated Cover Art (DALL-E 3): {image_prompt}")
+                                except Exception as e_dalle:
+                                    st.error(f"DALL-E 3 also failed: {e_dalle}")
                         except Exception as e:
                             st.error(f"Error generating album art: {e}")
 
