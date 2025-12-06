@@ -158,16 +158,24 @@ if uploaded_file is not None and api_key:
         if "study_guide" in st.session_state:
             from pdf_utils import create_study_guide_pdf
             
+            # Use dynamic title if available
+            doc_title = st.session_state.get("paper_title", "Podcast Study Guide")
+            
             # Generate PDF if not already done (or just generate on fly since it's fast)
-            pdf_path = create_study_guide_pdf(st.session_state.study_guide)
+            pdf_path = create_study_guide_pdf(st.session_state.study_guide, title=doc_title)
             
             with open(pdf_path, "rb") as pdf_file:
                 pdf_bytes = pdf_file.read()
+            
+            # Create dynamic filename
+            safe_title = "".join(c for c in doc_title if c.isalnum() or c in (' ', '_', '-')).strip()
+            safe_title = safe_title.replace(" ", "_")
+            filename = f"Study_Guide_{safe_title}.pdf"
                 
             st.download_button(
                 label="Download Study Guide (PDF) 📝",
                 data=pdf_bytes,
-                file_name="study_guide.pdf",
+                file_name=filename,
                 mime="application/pdf"
             )
 
