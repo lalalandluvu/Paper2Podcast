@@ -1,12 +1,18 @@
 import os
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 
-def load_and_split_pdf(file_path):
-    """Loads a PDF and splits it into chunks."""
-    loader = PyPDFLoader(file_path)
+def load_and_split_document(file_path):
+    """Loads a PDF or Docx file and splits it into chunks."""
+    if file_path.lower().endswith(".pdf"):
+        loader = PyPDFLoader(file_path)
+    elif file_path.lower().endswith((".docx", ".doc")):
+        loader = Docx2txtLoader(file_path)
+    else:
+        raise ValueError(f"Unsupported file format: {file_path}")
+        
     documents = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=2000,

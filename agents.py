@@ -1,24 +1,24 @@
 from crewai import Agent, Task, Crew, Process
 from crewai.tools import tool
 from langchain_openai import ChatOpenAI
-from rag_utils import create_vector_store, load_and_split_pdf, get_retriever
+from rag_utils import create_vector_store, load_and_split_document, get_retriever
 
 import os
 
 import random
 
-def create_podcast_crew(pdf_path, api_key, persona_description, host_name):
+def create_podcast_crew(file_path, api_key, persona_description, host_name):
     """Creates and runs the CrewAI workflow."""
     os.environ["OPENAI_API_KEY"] = api_key
     
     # 1. Setup RAG Tool
-    chunks = load_and_split_pdf(pdf_path)
+    chunks = load_and_split_document(file_path)
     vector_store = create_vector_store(chunks, api_key)
     retriever = get_retriever(vector_store)
     
-    @tool("Search PDF")
-    def search_pdf_tool(query: str):
-        """Search the PDF for relevant information. Always use this tool to find facts in the paper."""
+    @tool("Search Document")
+    def search_doc_tool(query: str):
+        """Search the document for relevant information. Always use this tool to find facts in the paper."""
         docs = retriever.invoke(query)
         return "\n\n".join([d.page_content for d in docs])
 
@@ -30,7 +30,7 @@ def create_podcast_crew(pdf_path, api_key, persona_description, host_name):
         role='Senior Academic Researcher',
         goal='Extract comprehensive and accurate information from the provided PDF, including the Lead Author\'s name.',
         backstory="You are an expert academic researcher. Your job is to read papers and extract key findings, methodologies, and limitations. You are rigorous and fact-based. You verify everything against the text.",
-        tools=[search_pdf_tool],
+        tools=[search_doc_tool],
         verbose=True,
         allow_delegation=False,
         llm=llm

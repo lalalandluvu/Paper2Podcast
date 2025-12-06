@@ -79,13 +79,14 @@ with st.sidebar:
 
 
 # Main Area
-uploaded_file = st.file_uploader("Upload a Research Paper (PDF)", type="pdf")
+uploaded_file = st.file_uploader("Upload a Research Paper (PDF or Word)", type=["pdf", "docx", "doc"])
 
 if uploaded_file is not None and api_key:
     if st.button("Generate Podcast"):
-        with st.spinner("Processing PDF and Generating Script... (This may take a minute)"):
+        with st.spinner("Processing file and Generating Script... (This may take a minute)"):
             # Save uploaded file to temp
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+            file_extension = os.path.splitext(uploaded_file.name)[1]
+            with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as tmp_file:
                 tmp_file.write(uploaded_file.getvalue())
                 tmp_path = tmp_file.name
             try:
@@ -97,12 +98,15 @@ if uploaded_file is not None and api_key:
                 
                 # Extract Title
                 try:
-                    reader = PdfReader(tmp_path)
-                    title = reader.metadata.title
-                    if not title:
-                        title = uploaded_file.name.replace(".pdf", "")
+                    if file_extension.lower() == ".pdf":
+                        reader = PdfReader(tmp_path)
+                        title = reader.metadata.title
+                        if not title:
+                            title = uploaded_file.name.replace(file_extension, "")
+                    else:
+                        title = uploaded_file.name.replace(file_extension, "")
                 except:
-                    title = uploaded_file.name.replace(".pdf", "")
+                    title = uploaded_file.name.replace(file_extension, "")
                 st.session_state.paper_title = title
                     
                 # Generate Album Art
