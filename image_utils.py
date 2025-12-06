@@ -16,24 +16,18 @@ def generate_album_art(prompt, api_key):
         PIL.Image.Image: The generated image object.
     """
     try:
-        # Initialize client with v1beta API version which is often required for Imagen 3 on AI Studio
-        client = genai.Client(api_key=api_key, http_options={'api_version': 'v1beta'})
+        client = genai.Client(api_key=api_key)
         
-        response = client.models.generate_images(
-            model='imagen-3.0-generate-001',
-            prompt=prompt,
-            config=types.GenerateImagesConfig(
-                number_of_images=1,
-            )
+        print("Trying model: gemini-2.5-flash-image")
+        response = client.models.generate_content(
+            model="gemini-2.5-flash-image",
+            contents=[prompt],
         )
         
-        # The response contains the image bytes
-        for generated_image in response.generated_images:
-            image_bytes = generated_image.image.image_bytes
-            image = Image.open(BytesIO(image_bytes))
-            return image
-            
+        for part in response.parts:
+            if part.inline_data is not None:
+                return part.as_image()
+                
     except Exception as e:
-        print(f"Error generating image with Google Imagen 3: {e}")
-        # Return None to signal failure
+        print(f"Error generating image with Gemini 2.5 Flash: {e}")
         return None
