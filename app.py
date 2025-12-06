@@ -88,36 +88,26 @@ if uploaded_file is not None and api_key:
             with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
                 tmp_file.write(uploaded_file.getvalue())
                 tmp_path = tmp_file.name
-
             try:
                 # Run CrewAI
                 script_result, summary_result = create_podcast_crew(tmp_path, api_key, persona_description, host_name)
                 
-                # Display Script
-                st.subheader("Generated Podcast Script")
-                st.text_area("Script", value=script_result, height=400)
-                
-                # Download Study Guide
-                st.download_button(
-                    label="Download Study Guide 📝",
-                    data=summary_result,
-                    file_name="study_guide.md",
-                    mime="text/markdown"
-                )
+                # Store results in session state
+                st.session_state.podcast_script = script_result
+                st.session_state.study_guide = summary_result
                 
                 # Extract Title
                 try:
                     reader = PdfReader(tmp_path)
                     title = reader.metadata.title
                     if not title:
-                        # Fallback to filename
                         title = uploaded_file.name.replace(".pdf", "")
                 except:
                     title = uploaded_file.name.replace(".pdf", "")
+                st.session_state.paper_title = title
                     
                 # Generate Album Art
                 if google_api_key:
-                    st.subheader("Album Art")
                     with st.spinner("Generating Album Art..."):
                         try:
                             from langchain_openai import ChatOpenAI
@@ -130,21 +120,20 @@ if uploaded_file is not None and api_key:
                             image = generate_album_art(image_prompt, google_api_key)
                             
                             if image:
-                                # Save to temp file to avoid Streamlit 'format' attribute error
+                                # Save to temp file
                                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_img:
                                     image.save(tmp_img.name)
-                                    st.image(tmp_img.name, caption=f"Generated Cover Art (Google Imagen 3): {image_prompt}")
+                                    st.session_state.album_art_path = tmp_img.name
+                                    st.session_state.image_prompt = image_prompt
                             else:
-                                st.warning("Failed to generate image with Google Imagen 3. Check your API Key and Model access.")
+                                st.warning("Failed to generate image with Google Imagen 3.")
                         except Exception as e:
                             st.error(f"Error generating album art: {e}")
 
                 # Generate Audio
-                st.subheader("Audio Generation")
                 with st.spinner("Synthesizing Audio..."):
                     audio_path = generate_audio(str(script_result), api_key, title, host_voice_id, guest_voice_id)
-                    
-                    st.audio(audio_path)
+                    st.session_state.audio_path = audio_path
                     st.success("Podcast Generated Successfully!")
                     
             except Exception as e:
@@ -153,6 +142,39 @@ if uploaded_file is not None and api_key:
                 # Cleanup
                 if os.path.exists(tmp_path):
                     os.unlink(tmp_path)
+
+    # Display Results from Session State
+    if "podcast_script" in st.session_state:
+        st.divider()
+        st.subheader("Generated Podcast Script")
+        st.text_area("Script", value=st.session_state.podcast_script, height=400)
+        
+        # Display Album Art
+        if "album_art_path" in st.session_state:
+            st.subheader("Album Art")
+            st.image(st.session_state.album_art_path, caption=f"Generated Cover Art: {st.session_state.get('image_prompt', '')}")
+            
+        # Download Study Guide (PDF)
+        if "study_guide" in st.session_state:
+            from pdf_utils import create_study_guide_pdf
+            
+            # Generate PDF if not already done (or just generate on fly since it's fast)
+            pdf_path = create_study_guide_pdf(st.session_state.study_guide)
+            
+            with open(pdf_path, "rb") as pdf_file:
+                pdf_bytes = pdf_file.read()
+                
+            st.download_button(
+                label="Download Study Guide (PDF) 📝",
+                data=pdf_bytes,
+                file_name="study_guide.pdf",
+                mime="application/pdf"
+            )
+
+        # Audio Player
+        if "audio_path" in st.session_state:
+            st.subheader("Audio Generation")
+            st.audio(st.session_state.audio_path)
 
 elif not api_key:
     st.warning("Please enter your OpenAI API Key in the sidebar to proceed. (Google API Key is optional but required for Album Art generation).")
