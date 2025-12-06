@@ -110,7 +110,10 @@ if uploaded_file is not None and api_key:
                             image = generate_album_art(image_prompt, google_api_key)
                             
                             if image:
-                                st.image(image, caption=f"Generated Cover Art (Google Imagen 3): {image_prompt}")
+                                # Save to temp file to avoid Streamlit 'format' attribute error
+                                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_img:
+                                    image.save(tmp_img.name)
+                                    st.image(tmp_img.name, caption=f"Generated Cover Art (Google Imagen 3): {image_prompt}")
                             else:
                                 st.warning("Failed to generate image with Google Imagen 3. Check your API Key and Model access.")
                         except Exception as e:
