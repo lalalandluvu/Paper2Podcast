@@ -1,0 +1,43 @@
+# Tasks
+
+- [x] Feature 1: AI Album Art Generator (Google Imagen 3) <!-- id: 0 -->
+    - [x] Research `google-genai` library and Imagen 3 API usage <!-- id: 1 -->
+    - [x] Create implementation plan <!-- id: 2 -->
+    - [x] Add `google-genai` to `requirements.txt` <!-- id: 3 -->
+    - [x] Create `image_utils.py` with `generate_album_art` function <!-- id: 4 -->
+    - [x] Update `app.py` to: <!-- id: 5 -->
+        - [x] Accept Google API Key
+        - [x] Generate image prompt (using LLM)
+        - [x] Call `generate_album_art`
+        - [x] Display image
+    - [x] Verify implementation <!-- id: 6 -->
+- [ ] Feature 2: Q&A with Researcher (Cancelled) <!-- id: 7 -->
+    - [x] Create implementation plan <!-- id: 9 -->
+    - [ ] Modify `agents.py` to return `vector_store` <!-- id: 10 -->
+    - [ ] Update `app.py` to: <!-- id: 11 -->
+        - [ ] Store `vector_store` in `st.session_state`
+        - [ ] Implement Chat Interface (`st.chat_input`, `st.chat_message`)
+        - [ ] Implement RAG query logic for chat
+    - [ ] Verify implementation <!-- id: 12 -->
+- [x] Feature 3: Cheat Sheet Download <!-- id: 8 -->
+    - [x] Create implementation plan <!-- id: 13 -->
+    - [x] Modify `agents.py` to add `summary_task` and return its output <!-- id: 14 -->
+    - [x] Update `app.py` to add `st.download_button` <!-- id: 15 -->
+    - [x] Verify implementation <!-- id: 16 -->
+- [x] Feature 4: PDF Study Guide & State Persistence <!-- id: 17 -->
+    - [x] Create implementation plan <!-- id: 18 -->
+    - [x] Add `fpdf` to `requirements.txt` <!-- id: 19 -->
+    - [x] Create `pdf_utils.py` <!-- id: 20 -->
+    - [x] Refactor `app.py` to use `st.session_state` for all generated content <!-- id: 21 -->
+    - [x] Update `app.py` to generate and download PDF <!-- id: 22 -->
+    - [x] Verify implementation <!-- id: 23 -->
+- [x] Feature 5: Performance Optimization <!-- id: 24 -->
+    - [x] Create implementation plan <!-- id: 25 -->
+    - [x] Optimize `agents.py` (Parallel execution) <!-- id: 26 -->
+    - [x] Optimize `rag_utils.py` (Chunking strategy) <!-- id: 27 -->
+    - [x] Verify improvements <!-- id: 28 -->
+- [x] Feature 6: PDF Formatting & Dynamic Naming <!-- id: 29 -->
+    - [x] Create implementation plan <!-- id: 30 -->
+    - [x] Update `pdf_utils.py` (Markdown parsing & dynamic title) <!-- id: 31 -->
+    - [x] Update `app.py` (Pass title & dynamic filename) <!-- id: 32 -->
+    - [x] Verify implementation <!-- id: 33 -->
