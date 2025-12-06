@@ -69,14 +69,16 @@ def create_podcast_crew(pdf_path, api_key, persona_description, host_name):
         """,
         agent=host,
         context=[research_task],
-        expected_output='A podcast script in dialogue format starting immediately with "Host:".'
+        expected_output='A podcast script in dialogue format starting immediately with "Host:".',
+        async_execution=True
     )
 
     summary_task = Task(
         description='Create a structured Markdown summary of the paper including: Key Findings, Methodology, and a Glossary of 5 key terms. This is for a student study guide.',
         agent=researcher,
         context=[research_task],
-        expected_output='A structured Markdown summary with Key Findings, Methodology, and Glossary.'
+        expected_output='A structured Markdown summary with Key Findings, Methodology, and Glossary.',
+        async_execution=True
     )
 
     # 5. Create Crew
