@@ -79,11 +79,7 @@ if uploaded_file is not None and api_key:
 
             try:
                 # Run CrewAI
-                script_result, vector_store = create_podcast_crew(tmp_path, api_key, persona_description, host_name)
-                
-                # Store vector_store in session state for chat
-                st.session_state.vector_store = vector_store
-                st.session_state.messages = [] # Reset chat history on new podcast generation
+                script_result = create_podcast_crew(tmp_path, api_key, persona_description, host_name)
                 
                 # Display Script
                 st.subheader("Generated Podcast Script")
@@ -137,59 +133,6 @@ if uploaded_file is not None and api_key:
                 # Cleanup
                 if os.path.exists(tmp_path):
                     os.unlink(tmp_path)
-
-    # Chat Interface
-    if "vector_store" in st.session_state:
-        st.divider()
-        st.subheader("Chat with the Researcher")
-        
-        # Initialize chat history if it doesn't exist
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
-
-        # Display chat messages from history on app rerun
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
-
-        # React to user input
-        if prompt := st.chat_input("Ask a follow-up question about the paper..."):
-            # Display user message in chat message container
-            st.chat_message("user").markdown(prompt)
-            # Add user message to chat history
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            
-            # Generate response
-            with st.spinner("Researcher is thinking..."):
-                try:
-                    from langchain.chains import RetrievalQA
-                    from langchain_openai import ChatOpenAI
-                    
-                    llm = ChatOpenAI(model="gpt-4o", api_key=api_key)
-                    retriever = st.session_state.vector_store.as_retriever()
-                    
-                    # Simple RAG chain
-                    qa_chain = RetrievalQA.from_chain_type(
-                        llm=llm,
-                        chain_type="stuff",
-                        retriever=retriever,
-                    )
-                    
-                    # Contextualize with history (simple append for now, or just rely on RAG)
-                    # For this simple implementation, we'll just query the RAG with the user prompt
-                    # Ideally, we should condense the question with history, but let's start simple.
-                    
-                    response = qa_chain.invoke(prompt)
-                    answer = response['result']
-                    
-                    # Display assistant response in chat message container
-                    with st.chat_message("assistant"):
-                        st.markdown(answer)
-                    # Add assistant response to chat history
-                    st.session_state.messages.append({"role": "assistant", "content": answer})
-                    
-                except Exception as e:
-                    st.error(f"Error generating response: {e}")
 
 elif not api_key:
     st.warning("Please enter your OpenAI API Key in the sidebar to proceed. (Google API Key is optional but required for Album Art generation).")

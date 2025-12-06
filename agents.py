@@ -83,4 +83,4 @@ def create_podcast_crew(pdf_path, api_key, persona_description, host_name):
     # 6. Kickoff
     # 6. Kickoff
     result = crew.kickoff()
-    return result, vector_store
+    return result
