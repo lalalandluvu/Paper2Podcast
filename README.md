@@ -2,7 +2,7 @@
 
 **Turn your academic papers into engaging audio podcasts.**
 
-Paper2Podcast is an AI-powered tool that transforms dense research papers (PDFs) into entertaining, conversational podcast scripts and then synthesizes them into high-quality audio using OpenAI's text-to-speech technology.
+Paper2Podcast is an AI-powered tool that transforms dense research papers (PDFs or Word Docs) into entertaining, conversational podcast scripts and then synthesizes them into high-quality audio using OpenAI's text-to-speech technology.
 
 ## 🌐 Live Demo
 
@@ -10,7 +10,7 @@ Try the app here: [**Paper2Podcast on Streamlit**](https://paper2podcast-5ch697e
 
 ## ✨ Features
 
-*   **PDF to Podcast**: Upload any research paper PDF.
+*   **PDF & Word to Podcast**: Upload any research paper (PDF, DOCX, DOC).
 *   **AI Research & Scripting**: Uses a multi-agent system (CrewAI) to research the paper and write a dialogue script.
 *   **Custom Personas**: Choose the "vibe" of your podcast:
     *   Standard (Informative & Balanced)
