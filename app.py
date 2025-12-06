@@ -17,8 +17,20 @@ st.markdown("Turn your academic papers into engaging podcasts.")
 # Sidebar for configuration
 with st.sidebar:
     st.header("Configuration")
-    api_key = st.text_input("OpenAI API Key", type="password")
-    google_api_key = st.text_input("Google API Key (for Album Art)", type="password", help="Get it from Google AI Studio")
+    
+    # Check for OpenAI API Key in secrets
+    if "OPENAI_API_KEY" in st.secrets:
+        st.success("OpenAI API Key loaded from secrets.")
+        api_key = st.secrets["OPENAI_API_KEY"]
+    else:
+        api_key = st.text_input("OpenAI API Key", type="password")
+        
+    # Check for Google API Key in secrets
+    if "GOOGLE_API_KEY" in st.secrets:
+        st.success("Google API Key loaded from secrets.")
+        google_api_key = st.secrets["GOOGLE_API_KEY"]
+    else:
+        google_api_key = st.text_input("Google API Key (for Album Art)", type="password", help="Get it from Google AI Studio")
     
     st.subheader("Podcast Persona")
     persona_type = st.selectbox(
