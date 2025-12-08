@@ -18,19 +18,11 @@ st.markdown("Turn your academic papers into engaging podcasts.")
 with st.sidebar:
     st.header("Configuration")
     
-    # Check for OpenAI API Key in secrets
-    if "OPENAI_API_KEY" in st.secrets:
-        st.success("OpenAI API Key loaded from secrets.")
-        api_key = st.secrets["OPENAI_API_KEY"]
-    else:
-        api_key = st.text_input("OpenAI API Key", type="password")
+    # OpenAI API Key Input
+    api_key = st.text_input("OpenAI API Key", type="password")
         
-    # Check for Google API Key in secrets
-    if "GOOGLE_API_KEY" in st.secrets:
-        st.success("Google API Key loaded from secrets.")
-        google_api_key = st.secrets["GOOGLE_API_KEY"]
-    else:
-        google_api_key = st.text_input("Google API Key (for Album Art)", type="password", help="Get it from Google AI Studio")
+    # Google API Key Input
+    google_api_key = st.text_input("Google API Key (for Album Art)", type="password", help="Get it from Google AI Studio")
     
     st.subheader("Podcast Persona")
     persona_type = st.selectbox(
@@ -83,7 +75,7 @@ uploaded_file = st.file_uploader("Upload a Research Paper (PDF or Word)", type=[
 
 if uploaded_file is not None and api_key:
     if st.button("Generate Podcast"):
-        with st.spinner("Processing file and Generating Script... (This may take a minute)"):
+        with st.spinner("Processing File and Generating Script... (This may take a minute)"):
             # Save uploaded file to temp
             file_extension = os.path.splitext(uploaded_file.name)[1]
             with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as tmp_file:
